@@ -1,11 +1,12 @@
 <template>
   <div class="trends">
-    <Trend v-for="trend in trends" v-bind:trend="trend" v-bind:key="trend.id"></Trend>
+    <Trend v-for="trend in trends" :trend="trend" :key="trend.id"></Trend>
   </div>
 </template>
 
 <script>
 import GithubApi from '@/api/github-api';
+
 import Trend from './Trend/Trend';
 
 const trends = GithubApi.getLastWeekTrends();

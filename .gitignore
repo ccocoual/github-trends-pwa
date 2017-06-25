@@ -6,4 +6,4 @@ yarn-debug.log*
 yarn-error.log*
 test/unit/coverage
 .history
-
+src/config/credentials.js

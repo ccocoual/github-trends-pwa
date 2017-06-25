@@ -1,21 +1,53 @@
 <template>
-  <a class="trend" v-bind:href="trend.html_url" target="_blank">
-    <div class="meta">
-      <Language v-bind:language="trend.language"></Language>
+  <div class="trend">
+    <div class="content">
+      <div class="meta">
+        <Language :language="trend.language" :color="languageColor"></Language>
+      </div>
+      <a class="title" :href="trend.html_url" target="_blank">{{ trend.name }}</a>
+      <span class="description">{{ trend.description }}</span>
     </div>
-    <span class="title">{{ trend.name }}</span>
-    <span class="description">{{ trend.description }}</span>
-  </a>
+    <div class="commit-graph">
+      <CommitGraph :height="100" :chart-data="allCommits" :chart-color="languageColor" v-if="allCommits"></CommitGraph>
+    </div>
+  </div>
 </template>
 
 <script>
+import ColorHash from 'color-hash';
+import GithubApi from '@/api/github-api';
+import CommitGraph from '@/components/CommitGraph/CommitGraph';
 import Language from './Language';
+
+const colorHash = new ColorHash();
 
 export default {
   name: 'trend',
   props: ['trend'],
   components: {
     Language,
+    CommitGraph,
+  },
+  data: () => ({
+    languageColor: '',
+    allCommits: null,
+  }),
+  mounted() {
+    this.fetchData();
+    this.getLanguageColor();
+  },
+  methods: {
+    fetchData() {
+      GithubApi.getCommitStats(this.trend.owner.login, this.trend.name)
+        .then((resp) => {
+          if (resp.data.all) {
+            this.allCommits = resp.data.all;
+          }
+        });
+    },
+    getLanguageColor() {
+      this.languageColor = colorHash.hex(this.trend.language);
+    },
   },
 };
 </script>
@@ -23,30 +55,29 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .trend {
-  text-decoration: none;
-  color: white;
-  max-width: 300px;
-  height: 300px;
-  padding: 20px;
   display: flex;
-  flex-direction: column;
-  margin-bottom: -10px;
-  border-radius: 10px;
-  background: linear-gradient(tomato, lightseagreen);
-  box-shadow: 0 0 10px 0 black;
-  &:nth-child(even) {
-
-    z-index: 100;
-    align-self: flex-end;
+  height: 100px;
+  padding: 20px;
+  text-align: left;
+  color: #2c3e50;
+}
+.content {
+  position: absolute;
+  max-width: 960px; // Don't know where this value is coming from ¯\_(ツ)_/¯
+  * {
+    display: block;
   }
-
+  .title {
+    font-family: 'Biryani', sans-serif;
+    font-size: 22px;
+    text-decoration: none;
+    color: #3a3838;
+  }
+  .description {
+    font-style: italic;
+  }
 }
-.title {
-  font-weight: 800;
-  font-size: 22px;
+.commit-graph {
+  opacity: 0.2;
 }
-.description {
-  font-style: italic;
-}
-
 </style>

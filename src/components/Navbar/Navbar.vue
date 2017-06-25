@@ -1,6 +1,10 @@
 <template>
   <div class="navbar">
-    <h1>{{ msg }}</h1>
+    <div>
+      <router-link to="/">
+        <i class="material-icons">home</i>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -23,12 +27,12 @@ export default {
   height: 65px;
   width: 100%;
   margin: 0 auto;
-  top: 0;
+  bottom: 0;
   width: 100%;
   z-index: 100;
-  /*background-color: #b2dfdb;
-  box-shadow: 0 0 20px 0 gray;*/
-  text-shadow: -4px 4px 15px #777;
+  display: flex;
+  background-color: white;
+  box-shadow: 0 2px 5px 0 gray;
 }
 h1 {
   margin: 10px;
